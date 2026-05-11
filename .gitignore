@@ -1,0 +1,6 @@
+.vs/
+.vscode/
+*.suo
+*.user
+*.log
+empresa_db.sql
