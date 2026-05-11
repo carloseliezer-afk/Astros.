@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CosmoAtlas | Explorador Astronomico</title>
+  <meta name="description" content="Explorador visual de objetos astronomicos con busqueda, imagenes, datos fisicos y fichas informativas.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="nebula nebula-one" aria-hidden="true"></div>
+  <div class="nebula nebula-two" aria-hidden="true"></div>
+  <div class="nebula nebula-three" aria-hidden="true"></div>
+
+  <div class="page-shell">
+    <header id="inicio" class="hero">
+      <nav class="topbar" aria-label="Navegacion principal">
+        <a class="brand" href="#inicio" aria-label="CosmoAtlas inicio">
+          <span class="brand-mark"></span>
+          CosmoAtlas
+        </a>
+        <div class="topbar-actions">
+          <a href="#explorar">Explorar</a>
+          <a href="#ficha">Ficha</a>
+          <a href="#atlas">Atlas</a>
+          <a href="#galeria">Galeria</a>
+          <a href="#observatorio">Observatorio</a>
+        </div>
+      </nav>
+
+      <section class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Mapa vivo del universo observable</p>
+          <h1>Busca cualquier astro y abre su ficha cosmica.</h1>
+          <p class="hero-text">
+            Investiga planetas, estrellas, nebulosas, galaxias, agujeros negros, cometas,
+            exoplanetas y objetos fisicos del cosmos con imagenes, datos y descripciones claras.
+          </p>
+          <form id="hero-search-form" class="hero-search" autocomplete="off">
+            <label for="hero-search-input">Objeto astronomico</label>
+            <div class="search-row">
+              <input id="hero-search-input" type="search" placeholder="Ej. Nebulosa de Orion, Jupiter, M87, Proxima Centauri">
+              <button class="primary-button" type="submit">Buscar</button>
+            </div>
+          </form>
+          <div class="quick-tags" aria-label="Busquedas rapidas">
+            <button type="button" data-query="Nebulosa de Orion">Nebulosa de Orion</button>
+            <button type="button" data-query="Agujero negro M87">M87*</button>
+            <button type="button" data-query="Galaxia de Andromeda">Andromeda</button>
+            <button type="button" data-query="Kepler-452b">Kepler-452b</button>
+          </div>
+        </div>
+
+        <aside class="mission-panel" aria-label="Objeto destacado">
+          <div class="orbit-widget">
+            <span class="orbit orbit-a"></span>
+            <span class="orbit orbit-b"></span>
+            <span class="orbit orbit-c"></span>
+            <span class="core"></span>
+          </div>
+          <p class="eyebrow">Objeto activo</p>
+          <h2 id="active-object-title">Nebulosa de Orion</h2>
+          <p id="active-object-summary">
+            Una region de formacion estelar donde nubes de gas y polvo brillan por la energia
+            de estrellas jovenes y masivas.
+          </p>
+          <dl class="signal-list">
+            <div>
+              <dt>Tipo</dt>
+              <dd id="active-object-type">Nebulosa difusa</dd>
+            </div>
+            <div>
+              <dt>Distancia</dt>
+              <dd id="active-object-distance">1.344 anos luz</dd>
+            </div>
+            <div>
+              <dt>Constelacion</dt>
+              <dd id="active-object-constellation">Orion</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+    </header>
+
+    <main>
+      <section id="explorar" class="section search-lab">
+        <div class="section-heading">
+          <p class="eyebrow">Explorador universal</p>
+          <h2>Busca, compara y abre la ficha sin salir de la pagina.</h2>
+          <p>
+            Escribe un nombre o elige una categoria. Las tarjetas actualizan la ficha principal
+            con datos, imagen y descripcion; no se abre ninguna pagina externa.
+          </p>
+        </div>
+
+        <form id="search-form" class="control-deck" autocomplete="off">
+          <label class="search-box" for="search-input">
+            <span>Buscar astro</span>
+            <input id="search-input" type="search" placeholder="Planeta, galaxia, estrella, pulsar, supernova...">
+          </label>
+          <label for="category-filter">
+            <span>Filtrar atlas</span>
+            <select id="category-filter">
+              <option value="all">Todos</option>
+              <option value="Planeta">Planetas</option>
+              <option value="Estrella">Estrellas</option>
+              <option value="Galaxia">Galaxias</option>
+              <option value="Nebulosa">Nebulosas</option>
+              <option value="Agujero negro">Agujeros negros</option>
+              <option value="Exoplaneta">Exoplanetas</option>
+              <option value="Objeto compacto">Objetos compactos</option>
+              <option value="Cometa">Cometas</option>
+              <option value="Luna">Lunas</option>
+            </select>
+          </label>
+          <button class="primary-button control-button" type="submit">Consultar</button>
+        </form>
+
+        <div id="status-line" class="status-line" role="status" aria-live="polite"></div>
+        <div id="results-grid" class="results-grid" aria-live="polite"></div>
+      </section>
+
+      <section id="ficha" class="section detail-section">
+        <div class="detail-shell">
+          <div class="detail-visual">
+            <img id="detail-image" alt="Imagen del objeto seleccionado" loading="lazy" decoding="async">
+            <div class="detail-badge" id="detail-source">Atlas local</div>
+          </div>
+          <article class="detail-content">
+            <p class="eyebrow">Ficha activa</p>
+            <div class="detail-title-row">
+              <h2 id="detail-title">Nebulosa de Orion</h2>
+              <span id="detail-type">Nebulosa</span>
+            </div>
+            <p id="detail-summary">
+              Region de formacion estelar visible a simple vista, iluminada por estrellas jovenes del cumulo del Trapecio.
+            </p>
+            <div id="detail-facts" class="detail-facts"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="atlas" class="section atlas-section">
+        <div class="section-heading">
+          <p class="eyebrow">Atlas inicial</p>
+          <h2>Mas astros, mas familias, mas formas de explorar.</h2>
+        </div>
+        <div id="atlas-grid" class="atlas-grid"></div>
+      </section>
+
+      <section id="galeria" class="section gallery-section">
+        <div class="section-heading">
+          <p class="eyebrow">Galeria profunda</p>
+          <h2>Imagenes que convierten datos en asombro.</h2>
+        </div>
+        <div class="gallery-grid">
+          <article class="gallery-card gallery-large">
+            <img class="real-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Orion%20Nebula%20-%20Hubble%202006%20mosaic%201800.jpg?width=1200" alt="Nebulosa de Orion captada por el telescopio Hubble" loading="lazy" decoding="async">
+            <div>
+              <span>Nebulosa</span>
+              <h3>Orion, fabrica de estrellas</h3>
+            </div>
+          </article>
+          <article class="gallery-card">
+            <img class="real-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Andromeda%20Galaxy%20%28with%20h-alpha%29.jpg?width=900" alt="Galaxia de Andromeda con regiones de hidrogeno alfa" loading="lazy" decoding="async">
+            <div>
+              <span>Galaxia</span>
+              <h3>Andromeda</h3>
+            </div>
+          </article>
+          <article class="gallery-card">
+            <img class="real-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Jupiter%20by%20Cassini-Huygens.jpg?width=900" alt="Jupiter observado por la mision Cassini-Huygens" loading="lazy" decoding="async">
+            <div>
+              <span>Planeta</span>
+              <h3>Jupiter</h3>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="observatorio" class="section observatory">
+        <div class="section-heading">
+          <p class="eyebrow">Observatorio</p>
+          <h2>Lee el cielo como un laboratorio fisico.</h2>
+        </div>
+        <div class="observatory-grid">
+          <article>
+            <span class="metric">13.800 M</span>
+            <h3>Anos de historia cosmica</h3>
+            <p>La luz que observamos permite estudiar materia, energia, gravedad, plasma y evolucion estelar.</p>
+          </article>
+          <article>
+            <span class="metric">+20</span>
+            <h3>Familias de objetos</h3>
+            <p>Desde planetas y lunas hasta galaxias activas, remanentes de supernova y agujeros negros.</p>
+          </article>
+          <article>
+            <span class="metric">API</span>
+            <h3>Busqueda abierta</h3>
+            <p>Las fichas se enriquecen con contenido publico de Wikipedia y miniaturas de Wikimedia.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <template id="atlas-card-template">
+    <article class="atlas-card">
+      <div class="atlas-media">
+        <img class="atlas-image" alt="" loading="lazy">
+      </div>
+      <div class="atlas-content">
+        <div class="card-meta">
+          <span class="object-type"></span>
+          <span class="object-distance"></span>
+        </div>
+        <h3 class="object-name"></h3>
+        <p class="object-description"></p>
+        <button class="ghost-button inspect-button" type="button">Ver ficha</button>
+      </div>
+    </article>
+  </template>
+
+  <template id="result-card-template">
+    <article class="result-card">
+      <img class="result-image" alt="" loading="lazy">
+      <div class="result-content">
+        <span class="result-source">Wikipedia</span>
+        <h3 class="result-title"></h3>
+        <p class="result-extract"></p>
+        <button class="ghost-button result-button" type="button">Ver ficha</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
